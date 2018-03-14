@@ -1,0 +1,18 @@
+#!/bin/sh
+
+# PRJ - one-word project name
+PRJ=bus
+# project source code
+PROJ=$HOME/src/$PRJ
+HOST=$PRJ.com
+# change to PUBLIC IP, check your OS instruction how to add additional IPs to system
+IP=192.168.3.1
+
+#DT=`date +%d-%b-%y`
+DT=`date +%b-%y`
+RUN="sudo docker run --log-driver=journald -h $HOST -v '$PROJ:/proj' -v '$HOME/docker-home:/home/dev' -p $IP:1022:22 -p $IP:80:80 -p $IP:443:443 -p $IP:9001:9001 --name=$PRJ-$DT parf/centos7-php72-dvp"
+echo ABOUT TO RUN
+echo $RUN
+echo ^C to stop
+read
+eval $RUN

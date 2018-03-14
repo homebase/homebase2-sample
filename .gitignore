@@ -1,0 +1,20 @@
+# Composer Files
+vendor
+*.log
+var
+old
+legacy
+*.old
+# zend studio
+.buildpath
+.project
+.settings
+*.swp
+# local files never commited to git
+*.local
+*.local.*
+# phpStrom
+/.idea/
+.sass-cache
+node_modules
+tmp
