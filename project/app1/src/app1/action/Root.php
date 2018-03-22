@@ -6,6 +6,8 @@ class Root extends \hb\Action {
 
     function index() {
        echo "hello world";
+       v( C("i") );
+
     }
 
 }
