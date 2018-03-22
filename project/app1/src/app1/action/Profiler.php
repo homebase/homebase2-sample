@@ -2,38 +2,12 @@
 
 namespace app1\action;
 
+
+use function hb\dbg;  // use ?DEBUG=1 or --debug=1 to see this messages
+
 /*
  * Sample Nested and Deep Profiling Example
  **/
-
-class Profiler extends \hb\Action {
-
-    # uri: /profiler/
-    function index() {
-        echo "<h1>Complex Profiling Example</h1>";
-
-        $API_KEY = \hb\Str::random(6);
-        iprofiler()->in("api-call-wrapper", ["api-params" => 'outter api call'], ['api' => $API_KEY, 'style' => 'hide']);
-         iprofiler()->api("api-call", ["api-params"]);
-         iprofiler()->info("opts[link] + args[0]", ['arg[0] text', 'a' => 'A'], ['link' => '/url/', 'edit' => '/xxx']);
-         iprofiler()->inHide("in and hide", ['text'], ['details' => '/url/', 'edit' => '/xxx']);
-          iprofiler()->api("api-call internal", ["api-params 2"]);
-          usleep(60200);
-          $a = str_repeat("xxx", 400000);
-         iprofiler()->out(['arg-in-out' => "a"]);
-         unset($a);
-        iprofiler()->out(['arg-in-out' => "b"]);
-
-
-        $x = new XXX_Very_Very_Long_ClassName();
-        $x->veryVeryLong_Method__Name("a", [1,2,3], "b", str_repeat("abC-", 22), $_SERVER);
-        unset($P);
-
-
-        return 0;
-    }
-
-}
 
 
 function A_Project($callable, ...$args) {
@@ -43,12 +17,12 @@ function A_Project($callable, ...$args) {
 class XXX_Very_Very_Long_ClassName {
 
     function veryVeryLong_Method__Name($a, $b, $c, $d) {
-        return A_Project("XXX_Very_Very_Long_ClassName::methodName", $b, [$a, [$c, $d]]);
+        return A_Project(__NAMESPACE__."\\"."XXX_Very_Very_Long_ClassName::methodName", $b, [$a, [$c, $d]]);
     }
 
     static function methodName($param1, &$param2, $deep = 0) {
         $P = profiler(__FUNCTION__, $param1);
-        hb\dbg(1, "in-here");
+        dbg(1, "in-here");
         // hb\e(hb\HB::$Q);
         usleep(800);
         iprofiler()->info("info", ['reason' => 'test:', 'p' => $param1]);
@@ -79,6 +53,36 @@ class XXX_Very_Very_Long_ClassName {
         # <h1>H1sdfs</h1>
         #1/0;
         #C(str_repeat("unknonwn.node;", 22));
+    }
+
+}
+
+
+class Profiler extends \hb\Action {
+
+    # uri: /profiler/
+    function index() {
+        echo "<h1>Complex Profiling Example</h1>";
+
+        $API_KEY = \hb\Str::random(6);
+        iprofiler()->in("api-call-wrapper", ["api-params" => 'outter api call'], ['api' => $API_KEY, 'style' => 'hide']);
+         iprofiler()->api("api-call", ["api-params"]);
+         iprofiler()->info("opts[link] + args[0]", ['arg[0] text', 'a' => 'A'], ['link' => '/url/', 'edit' => '/xxx']);
+         iprofiler()->inHide("in and hide", ['text'], ['details' => '/url/', 'edit' => '/xxx']);
+          iprofiler()->api("api-call internal", ["api-params 2"]);
+          usleep(60200);
+          $a = str_repeat("xxx", 400000);
+         iprofiler()->out(['arg-in-out' => "a"]);
+         unset($a);
+        iprofiler()->out(['arg-in-out' => "b"]);
+
+
+        $x = new XXX_Very_Very_Long_ClassName();
+        $x->veryVeryLong_Method__Name("a", [1,2,3], "b", str_repeat("abC-", 22), $_SERVER);
+        unset($P);
+
+
+        return 0;
     }
 
 }
