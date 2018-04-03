@@ -3,7 +3,7 @@
 namespace app1\action;
 
 
-use function hb\dbg;  // use ?DEBUG=1 or --debug=1 to see this messages
+use function hb\debug;  // use ?DEBUG or --debug to see this messages
 
 /*
  * Sample Nested and Deep Profiling Example
@@ -22,7 +22,7 @@ class XXX_Very_Very_Long_ClassName {
 
     static function methodName($param1, &$param2, $deep = 0) {
         $P = profiler(__FUNCTION__, $param1);
-        dbg(1, "in-here");
+        debug("in-here");
         // hb\e(hb\HB::$Q);
         usleep(800);
         iprofiler()->info("info", ['reason' => 'test:', 'p' => $param1]);
