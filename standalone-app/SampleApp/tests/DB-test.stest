@@ -1,0 +1,25 @@
+#!/bin/env stest
+<?php
+
+//
+// show SQL instead of executing it
+//
+
+$d = \hb\DB("emp-test");
+    'Instance(hb\\db\\adapter\\Test)';
+$d->select("* from employees.employees", ['emp_no' => 499971]);
+    ['SELECT * from employees.employees
+     WHERE emp_no=:emp_no', ["emp_no"=>499971], 'assoc'];
+
+/**
+ * 1. value in array.  field in (a,b,c)
+ * 2. order-by
+ * 3. limit
+ */
+$d->select("fname_id, lname_id from hb.profile", ["fname_id" => 1, 'lname_id' => [1,2,3],  "_limit"=> "20,10", '_order' => 'id desc'] );
+    ['Error:hb\\Error', 'DB where-value must be scalar'];
+$d->_select("fname_id, lname_id from hb.profile", ["fname_id" => 1, 'lname_id' => [1,2,3],  "_limit"=> "20,10", '_order' => 'id desc'] );
+    ['SELECT fname_id, lname_id from hb.profile
+    WHERE fname_id=:fname_id AND lname_id IN (:lname_id_0,:lname_id_1,:lname_id_2)
+    ORDER BY id desc
+    LIMIT 20,10', ["fname_id"=>1, "lname_id_0"=>1, "lname_id_1"=>2, "lname_id_2"=>3], 'assoc'];

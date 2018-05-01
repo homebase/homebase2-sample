@@ -1,0 +1,63 @@
+#!/bin/env stest
+<?php
+
+$d = \hb\DB("emp");
+    'Instance(hb\\db\\adapter\\Mysql)';
+$dx = \hb\DB("emp-x");
+    'Instance(hb\\db\\adapter\\MysqlX)';
+$dt = \hb\DB("emp-test");
+    'Instance(hb\\db\\adapter\\Test)';
+
+$d->select("* from employees.employees", ['emp_no' => 499971]);
+    [["birth_date"=>'1963-12-28', "emp_no"=>'499971', "first_name"=>'Uwe', "gender"=>'M', "hire_date"=>'1989-02-26', "last_name"=>'Uludag']];
+
+$dt->_select("* from employees.employees", ['emp_no => :a' => 499971, 'emp_no <= :b' => 499981]);
+    ['SELECT * from employees.employees
+    WHERE emp_no => :a AND emp_no <= :b', ["a"=>499971, "b"=>499981], 'assoc'];
+
+// force-extended syntax
+$d->_select("emp_no, concat(first_name, ' ', last_name) name from employees.employees", ['emp_no >= :a' => 499971, 'emp_no <= :b' => 499974]);
+    [["emp_no"=>'499971', "name"=>'Uwe Uludag'], ["emp_no"=>'499972', "name"=>'Katsuo Leuchs'], ["emp_no"=>'499973', "name"=>'Lobel Taubman'], ["emp_no"=>'499974', "name"=>'Shuichi Piazza']];
+
+// EXTENDED SYNTAX
+
+$dx->select("emp_no, concat(first_name, ' ', last_name) name from employees.employees", ['emp_no >= :a' => 499971, 'emp_no <= :b' => 499974], "num");
+    [['499971', 'Uwe Uludag'], ['499972', 'Katsuo Leuchs'], ['499973', 'Lobel Taubman'], ['499974', 'Shuichi Piazza']];
+
+$dx->select("emp_no, concat(first_name, ' ', last_name) name from employees.employees", ['emp_no >= :a' => 499971, 'emp_no <= :b' => 499974], "column");
+    ['499971', '499972', '499973', '499974'];
+$dx->select("concat(first_name, ' ', last_name) name from employees.employees", ['emp_no >= :a' => 499971, 'emp_no <= :b' => 499974], "column");
+    ['Uwe Uludag', 'Katsuo Leuchs', 'Lobel Taubman', 'Shuichi Piazza'];
+$dx->column("concat(first_name, ' ', last_name) name from employees.employees", ['emp_no >= :a' => 499971, 'emp_no <= :b' => 499974]);
+    ['Uwe Uludag', 'Katsuo Leuchs', 'Lobel Taubman', 'Shuichi Piazza'];
+
+$dx->hash("emp_no, concat(first_name, ' ', last_name) name from employees.employees", ['emp_no >= :a' => 499971, 'emp_no <= :b' => 499974]);
+    ["499971"=>'Uwe Uludag', "499972"=>'Katsuo Leuchs', "499973"=>'Lobel Taubman', "499974"=>'Shuichi Piazza'];
+
+$dx->select("emp_no, first_name, last_name from employees.employees", ['emp_no >= :a' => 499971, 'emp_no <= :b' => 499974], "group_column");
+    ["499971"=>['Uwe'], "499972"=>['Katsuo'], "499973"=>['Lobel'], "499974"=>['Shuichi']];
+
+$dx->select("emp_no, first_name, last_name from employees.employees", ['emp_no >= :a' => 499971, 'emp_no <= :b' => 499974], "group");
+    ["499971"=>[["first_name"=>'Uwe', "last_name"=>'Uludag']], "499972"=>[["first_name"=>'Katsuo', "last_name"=>'Leuchs']], "499973"=>[["first_name"=>'Lobel', "last_name"=>'Taubman']], "499974"=>[["first_name"=>'Shuichi', "last_name"=>'Piazza']]];
+$dx->select("emp_no, first_name, last_name from employees.employees", ['emp_no >= :a' => 499971, 'emp_no <= :b' => 499974], "unique");
+    ["499971"=>["first_name"=>'Uwe', "last_name"=>'Uludag'], "499972"=>["first_name"=>'Katsuo', "last_name"=>'Leuchs'], "499973"=>["first_name"=>'Lobel', "last_name"=>'Taubman'], "499974"=>["first_name"=>'Shuichi', "last_name"=>'Piazza']];
+$dx->select("first_name, last_name from employees.employees", ['emp_no >= :a' => 499971, 'emp_no <= :b' => 499974], "one");
+    'Uwe';
+$dx->one("first_name, last_name from employees.employees", ['emp_no >= :a' => 499971, 'emp_no <= :b' => 499974], "one");
+    'Uwe';
+$dx->select("emp_no, first_name, last_name from employees.employees", ['emp_no >= :a' => 499971, 'emp_no <= :b' => 499974], "row");
+    ["emp_no"=>'499971', "first_name"=>'Uwe', "last_name"=>'Uludag'];
+$dx->select("emp_no, first_name, last_name from employees.employees", ['emp_no >= :a' => 499971, 'emp_no <= :b' => 499974], "rowNum");
+    ['499971', 'Uwe', 'Uludag'];
+$dx->rows("employees.employees", ['emp_no >= :a' => 499971, 'emp_no <= :b' => 499974]);
+    ["499971"=>["birth_date"=>'1963-12-28', "first_name"=>'Uwe', "gender"=>'M', "hire_date"=>'1989-02-26', "last_name"=>'Uludag'], "499972"=>["birth_date"=>'1957-07-25', "first_name"=>'Katsuo', "gender"=>'F', "hire_date"=>'1989-11-23', "last_name"=>'Leuchs'], "499973"=>["birth_date"=>'1963-06-03', "first_name"=>'Lobel', "gender"=>'M', "hire_date"=>'1994-02-01', "last_name"=>'Taubman'], "499974"=>["birth_date"=>'1956-09-10', "first_name"=>'Shuichi', "gender"=>'F', "hire_date"=>'1989-09-16', "last_name"=>'Piazza']];
+
+# Errors
+#$d->select("aaa");
+#    ['Error:hb\\db\\SqlError', '{"err":"Unknown column \'aaa\' in \'field list\'","sql":"SELECT aaa","code":"42S22"}'];
+
+$d->pk("employees.employees");
+    ['emp_no'];
+$d->fields("employees.employees");
+    ["birth_date"=>['date', NULL], "emp_no"=>['int', NULL], "first_name"=>['varchar', '14'], "gender"=>['enum', '1'], "hire_date"=>['date', NULL], "last_name"=>['varchar', '16']];
+

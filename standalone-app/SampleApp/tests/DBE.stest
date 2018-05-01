@@ -1,9 +1,0 @@
-#!/bin/env stest
-<?php
-
-$d = \hb\dbe("emp");
-    'Instance(hb\\db\\adapter\\Mysql)';
-
-$d->select("* from employees.employees", ['emp_no' => 499971]);
-    [["birth_date"=>'1963-12-28', "emp_no"=>'499971', "first_name"=>'Uwe', "gender"=>'M', "hire_date"=>'1989-02-26', "last_name"=>'Uludag']];
-

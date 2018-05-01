@@ -1,0 +1,20 @@
+#!/bin/env stest
+<?php
+
+$d = \hb\DB("products");
+    'Instance(hb\\db\\adapter\\Pgsql)';
+
+$d->select("* from products", ['id' => 12]);
+    [["created_at"=>'2011-01-01 15:00:00-05', "deleted_at"=>NULL, "id"=>12, "price"=>'9.99', "tags"=>'{Music}', "title"=>'Holiday CD']];
+
+$d->select("a.attname
+  FROM   pg_index i
+  JOIN   pg_attribute a ON a.attrelid = i.indrelid AND a.attnum = ANY(i.indkey)
+  WHERE  i.indrelid = 'products'::regclass
+  AND    i.indisprimary;", [], "column");
+    ['id'];
+
+$d->pk("products");
+    ['id'];
+json_encode($d->fields("products"));
+    '{"id":["int4",null],"title":["varchar",255],"price":["numeric",null],"created_at":["timestamptz",null],"deleted_at":["timestamptz",null],"tags":["_varchar",null]}';

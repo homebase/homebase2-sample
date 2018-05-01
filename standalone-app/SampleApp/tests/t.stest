@@ -1,0 +1,5 @@
+#!/bin/env stest
+<?php
+
+$d = \hb\DB("emp");
+    'Instance(hb\\db\\adapter\\Mysql)';

@@ -1,3 +1,6 @@
 # connection-name: engine:user:password@host
 emp: mysql:parf:mv700@192.168.1.2
+emp-x: MysqlX:parf:mv700@192.168.1.2
 emp-test: test:parf:mv700@localhost
+products: Pgsql:parf:mv700@192.168.1.2
+
