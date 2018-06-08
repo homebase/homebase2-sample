@@ -1,0 +1,56 @@
+<?php
+/**
+    G.title             << required = string or array
+    G.meta              << G.meta.$name => $content
+    G.css               << G.css.$name => filename
+    G.js                << G.js.$name => filename
+    G.head              << G.head.$name = HTML  << add ANY html to HEAD
+    G.body-top          << G.body-top.$name = HTML  << add ANY html to the top of the body
+    G.body-bottom       << G.body-bottom.$name = HTML  << add ANY html to the bottom of the body
+
+    Examples:
+        G.css.my-css = "/css/my-css"
+        G.meta.description = "my-description"
+        G.meta.viewport = "width=device-width"
+
+**/
+
+$P['G.js.jquery'] = "https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js";
+$P["G.css.main"] = "/css/main.css";
+$P['G.meta.viewport'] = "width=device-width";
+
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>{=G.title | not_empty}</title>
+    {?G.head}{#G.head}{=@.}{/* NAME => FULL meta tag */}{/#}{/?}
+    {#G.meta}<meta name="{=#}" content="{=.}">{/#}
+    {#G.css}{?.}<link href="{=. | \WebVersion::url}" rel="stylesheet">{/?} {/#}
+    {#G.js}{?. | \WebVersion::url}<script src="{=?}"></script>{/?} {/#} {/* local versioned & remote javascripts */}
+</head>
+<body>
+    {=@?G.body-top}
+    {=:header}
+    {=@MAIN}
+    {=:footer}
+    {=@?G.body-top}
+    {%xadmin}
+        <style>
+            admin, .admin, .admin a { color: #f55 !important; }
+            .admin-item-info { border: 1px solid #f55; display: inline-block; }
+        </style>
+        {=/inc/Debug:footer}
+    {/}
+</body>
+</html>
+
+{:block header}
+ <div id=header>HEADER</div>
+ <div id=body>
+{/:}
+
+{:block footer}
+ </div>
+ <div id=footer>Footer</div>
+{/:}

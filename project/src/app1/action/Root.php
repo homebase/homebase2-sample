@@ -29,6 +29,11 @@ class Root extends \hb\Action {
     }
 
     function index() {
+        $this["x"] = "xxx";
+        echo "INDEX";
+        \hb\e("{red}hb\\e TEXT{/}");
+        \hb\err("{red}hb\\err TEXT{/}");
+        echo "End of Action<hr>";
     }
 
 }

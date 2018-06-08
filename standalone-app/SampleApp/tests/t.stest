@@ -3,3 +3,6 @@
 
 $d = \hb\DB("emp");
     'Instance(hb\\db\\adapter\\Mysql)';
+
+iprofiler()::$enabled;
+    0;
